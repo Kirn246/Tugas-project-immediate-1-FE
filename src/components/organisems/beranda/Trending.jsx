@@ -1,47 +1,79 @@
+import { useRef } from "react";
 import trendingMovies from "../../../store/beranda/trendingMovies";
 import rightArrow from "../../../assets/images/beranda/icon/right-arrow.svg";
 import leftArrow from "../../../assets/images/beranda/icon/left-arrow.svg";
 
 const Trending = () => {
   const { movies } = trendingMovies();
-  return (
-    <div>
-      <section className="relative p-2 text-white overflow-hidden">
-        <div className="p-4">
-          <h3 className="text-white font-bold text-[20px] md:text-[32px] mt-5 md:mt-10 mb-4">
-            Film Trending
-          </h3>
+  const sliderRef = useRef(null);
 
-          <div className="relative flex gap-5 md:gap-8 mb-4 w-full overflow-scroll md:overflow-hidden">
-            {movies.map((movie, index) => (
-              <div key={index} className="relative">
-                <div className="w-[95px] md:w-[234px]">
-                  <img src={movie.poster} alt="image" />
-                </div>
-                <div
-                  className={`${
-                    movie.trending == "" ? "hidden" : ""
-                  } absolute bg-error w-[14.82px] md:w-[31px] h-[21.82px] md:h-[48px] rounded-tr-[1.91px] md:rounded-tr-[4px] rounded-bl-[1.91px] md:rounded-bl-[4px] top-0 md:top-0 right-1 md:right-3 flex justify-center items-center text-center`}
-                >
-                  <p className="text-[5.74px] md:text-[14px]">
+  const scrollLeft = () => {
+    sliderRef.current.scrollBy({ left: -300, behavior: "smooth" });
+  };
+
+  const scrollRight = () => {
+    sliderRef.current.scrollBy({ left: 300, behavior: "smooth" });
+  };
+
+  return (
+    <section className="relative p-2 text-white overflow-hidden">
+      <div className="p-4">
+        <h3 className="font-bold text-[20px] md:text-[32px] mt-5 md:mt-10 mb-4">
+          Film Trending
+        </h3>
+
+        {/* SLIDER */}
+        <div
+          ref={sliderRef}
+          className="relative flex gap-5 md:gap-8 mb-4 w-full overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth"
+        >
+          {movies.map((movie, index) => (
+            <div key={index} className="relative shrink-0">
+              <div className="w-[95px] md:w-[234px]">
+                <img
+                  src={movie.poster}
+                  alt="image"
+                  className="rounded-lg"
+                />
+              </div>
+
+              {movie.trending && (
+                <div className="absolute bg-error w-[15px] md:w-[31px] h-[22px] md:h-[48px] rounded-tr-[2px] md:rounded-tr-[4px] rounded-bl-[2px] md:rounded-bl-[4px] top-0 right-1 md:right-3 flex justify-center items-center text-center">
+                  <p className="text-[6px] md:text-[14px]">
                     {movie.trending}
                   </p>
                 </div>
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          ))}
         </div>
-        <div className="absolute flex justify-between w-full top-[9rem] md:top-[18rem]">
-          <div className="flex w-[44px] -ml-2">
-            <img src={leftArrow} alt="image" />
-          </div>
+      </div>
 
-          <div className="flex w-[44px] mr-2">
-            <img src={rightArrow} alt="image" />
-          </div>
-        </div>
-      </section>
-    </div>
+      {/* CAROUSEL BUTTON - MOBILE & DESKTOP */}
+      <div className="absolute flex justify-between items-center w-full top-[10rem] md:top-[18rem] px-2 pointer-events-none">
+        <button
+          onClick={scrollLeft}
+          className="bg-black/60 p-2 md:p-3 rounded-full hover:bg-black transition pointer-events-auto"
+        >
+          <img
+            src={leftArrow}
+            alt="left"
+            className="w-5 md:w-7"
+          />
+        </button>
+
+        <button
+          onClick={scrollRight}
+          className="bg-black/60 p-2 md:p-3 rounded-full hover:bg-black transition pointer-events-auto"
+        >
+          <img
+            src={rightArrow}
+            alt="right"
+            className="w-5 md:w-7"
+          />
+        </button>
+      </div>
+    </section>
   );
 };
 
